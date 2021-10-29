@@ -41,7 +41,7 @@ unsigned char choice = 0;
 
 
 /**
- * @brief brief description 
+ * @brief brief description
  * Main function loads file in the root directory of the Project,
  * parses its content and saves the data in array of records, then
  * waits for the user input selection
@@ -49,7 +49,7 @@ unsigned char choice = 0;
  */
 int main()
 {
-    printf("***********************  Eroski test exercise  ***********************\n");
+    printf("----------------------  Eroski test exercise  ---------------------\n");
     FILE *in_file  = fopen("data.txt", "r");
     // test for files not existing.
     if (in_file == NULL)
@@ -64,7 +64,7 @@ int main()
         unsigned int index = 0;
         char *s;
         char **data = NULL;
-        data = (char**)malloc(sizeof(char*) * 1);
+        data = (char**)malloc(sizeof(char*));
         while(fscanf(in_file,"%s", s) != EOF)
         {
             if(s){
@@ -104,12 +104,10 @@ int main()
                 }
                 else if(strstr(s_data, "V") != NULL){ // Decimal type
                     records[i].data_type = DECIMAL;
-                    unsigned int size = getIntLength(s_data);
-                    records[i].integer_length = size;
-                    unsigned int matches = 0;
-                    s_data = str_replace(s_data, "9", "", &matches);
-                    size = getFloatLength(s_data);
+                    unsigned int size = getFloatLength(s_data);
                     records[i].decimal_length = size;
+                    size = getIntLength(s_data);
+                    records[i].integer_length = size;
                 }
                 else if(strstr(s_data, "9") != NULL){ // Integer type
                     records[i].data_type = NUMERIC;
@@ -153,11 +151,11 @@ int main()
     exit(-1);
     return 0;
 }
-    
+
 
 //////////////////////////////////// Function implementations //////////////////////////////////////
 /**
- * @brief brief description 
+ * @brief brief description
  * Received records and prints the array
  * @param  {RecordType*} records : Pointer to the records to print
  * @param  {unsigned} short      : The size of the array of records
@@ -297,23 +295,28 @@ unsigned int getIntLength(char *str_original){
         char *split_data[2];
         str_split(str, "9(", split_data);
         if(split_data[1] && strstr(split_data[1], ")") != NULL){
-            str_split(split_data[1], ")", split_data);
-            char *s_amount = split_data[0];
-            size = (int) strtol(s_amount, (char **)NULL, 10);
+            unsigned int matches = 0;
+            str_original = str_replace(str_original, "9(", "", &matches);
+            char *split[2];
+            str_split(split_data[1], ")", split);
+            char *s_amount = split[0];
+            size += (int) strtol(s_amount, (char **)NULL, 10);
         }
         if(split_data[0] && strstr(split_data[0], ")") != NULL){
-            str_split(split_data[0], ")", split_data);
-            char *s_amount = split_data[0];
-            size = (int) strtol(s_amount, (char **)NULL, 10);
-        }
-    }
-    else{
-        while (str && strstr(str, "9") != NULL) {
             unsigned int matches = 0;
-            str = str_replace(str, "9", "", &matches);
-            size = matches;
+            str_original = str_replace(str_original, "9(", "", &matches);
+            char *split[2];
+            str_split(split_data[0], ")", split);
+            char *s_amount = split[0];
+            size += (int) strtol(s_amount, (char **)NULL, 10);
         }
     }
+    while (str_original && strstr(str_original, "9") != NULL) {
+        unsigned int m = 0;
+        str_original = str_replace(str_original, "9", "", &m);
+        size += m;
+    }
+
     free(str);
     return size;
 }
@@ -455,10 +458,9 @@ char *str_replace(char *orig, char *rep, char *with, unsigned int *count_matches
  * This function splits the string in two parts
  * @param  {char*} str       : Pointer to the string to split
  * @param  {char*} delim     : Pointer to the string splitter pattern
- * @param  {char* []} result : Pointer to the string array splitted parts 
+ * @param  {char* []} result : Pointer to the string array splitted parts
  */
 void str_split(char *str, char *delim, char* result[]){
-    //        int init_size = strlen(str);
     unsigned int i = 0;
     char *ptr = strtok(str, delim);
     result[i] = ptr;
