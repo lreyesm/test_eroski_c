@@ -49,7 +49,7 @@ unsigned char choice = 0;
  */
 int main()
 {
-    printf("----------------------  Eroski test exercise  ---------------------\n");
+    printf("***********************  Eroski test exercise  ***********************\n");
     FILE *in_file  = fopen("data.txt", "r");
     // test for files not existing.
     if (in_file == NULL)
@@ -96,6 +96,9 @@ int main()
                 if (strstr(s_id, "field") != NULL) { //Checks if contains the "field" string and replaces it
                     s_id = str_replace(split_data[0], "field", "", &matches);
                 }
+                if(!s_id){
+                    s_id = "0";
+                }
                 int num = (int) strtol(s_id, (char **)NULL, 10);  //Convert to int
                 records[i].id = num;
                 if(strstr(s_data, "X") != NULL){ // String type
@@ -114,6 +117,8 @@ int main()
                     unsigned int size = getIntLength(s_data);
                     records[i].integer_length = size;
                 }
+                free(s_id);
+                free(s_data);
                 free(str);
             }
         }
@@ -139,8 +144,10 @@ int main()
                 choice = 0;
                 choice4(records, SIZE);
             }
-            else if (choice =='5')
+            else if (choice =='5'){
+                free(records);
                 break;
+            }
             else{
                 if(choice != '\n'){
                     printf("Invalid character.\n\n", choice);
@@ -230,7 +237,7 @@ void menu(void) {
 void sortByType(RecordType *records, unsigned short size){
     unsigned short i, j;
     for(i = 0; i < size - 1; i++){
-        for(j = 0; j < size - i - 1; j++){
+        for(j = 1; j < size; j++){
             struct record tempRecord;
             if (records[j].data_type > records[j+1].data_type) //Increasing order
             {
@@ -250,7 +257,7 @@ void sortByType(RecordType *records, unsigned short size){
 void sortByIntegerLength(RecordType *records, unsigned short size){
     unsigned short i, j;
     for(i = 0; i < size - 1; i++){
-        for(j = 0; j < size - i - 1; j++){
+        for(j = 1; j < size; j++){
             struct record tempRecord;
             if (records[j].integer_length > records[j+1].integer_length) //Increasing order
             {
@@ -270,7 +277,7 @@ void sortByIntegerLength(RecordType *records, unsigned short size){
 void sortByFloatingLength(RecordType *records, unsigned short size){
     unsigned short i, j;
     for(i = 0; i < size - 1; i++){
-        for(j = 0; j < size - i - 1; j++){
+        for(j = 1; j < size - i; j++){
             struct record tempRecord;
             if (records[j].decimal_length > records[j+1].decimal_length) //Increasing order
             {
@@ -461,6 +468,7 @@ char *str_replace(char *orig, char *rep, char *with, unsigned int *count_matches
         orig += len_front + len_rep; // move to next "end of rep"
     }
     strcpy(tmp, orig);
+    free(tmp);
     return result;
 }
 /**
