@@ -334,23 +334,28 @@ unsigned int getFloatLength(char *str_original){
         char *split_data[2];
         str_split(str, "V(", split_data);
         if(split_data[1] && strstr(split_data[1], ")") != NULL){
-            str_split(split_data[1], ")", split_data);
-            char *s_amount = split_data[0];
-            size = (int) strtol(s_amount, (char **)NULL, 10);
+            unsigned int matches = 0;
+            str_original = str_replace(str_original, "V(", "", &matches);
+            char *split[2];
+            str_split(split_data[1], ")", split);
+            char *s_amount = split[0];
+            size += (int) strtol(s_amount, (char **)NULL, 10);
         }
         if(split_data[0] && strstr(split_data[0], ")") != NULL){
-            str_split(split_data[0], ")", split_data);
-            char *s_amount = split_data[0];
-            size = (int) strtol(s_amount, (char **)NULL, 10);
-        }
-    }
-    else{
-        while (str && strstr(str, "V") != NULL) {
             unsigned int matches = 0;
-            str = str_replace(str, "V", "", &matches);
-            size = matches;
+            str_original = str_replace(str_original, "V(", "", &matches);
+            char *split[2];
+            str_split(split_data[0], ")", split);
+            char *s_amount = split[0];
+            size += (int) strtol(s_amount, (char **)NULL, 10);
         }
     }
+    while (str_original && strstr(str_original, "V") != NULL) {
+        unsigned int m = 0;
+        str_original = str_replace(str_original, "V", "", &m);
+        size += m;
+    }
+
     free(str);
     return size;
 }
@@ -368,23 +373,28 @@ unsigned int getStringLength(char *str_original){
         char *split_data[2];
         str_split(str, "X(", split_data);
         if(split_data[1] && strstr(split_data[1], ")") != NULL){
-            str_split(split_data[1], ")", split_data);
-            char *s_amount = split_data[0];
-            size = (int) strtol(s_amount, (char **)NULL, 10);
+            unsigned int matches = 0;
+            str_original = str_replace(str_original, "X(", "", &matches);
+            char *split[2];
+            str_split(split_data[1], ")", split);
+            char *s_amount = split[0];
+            size += (int) strtol(s_amount, (char **)NULL, 10);
         }
         if(split_data[0] && strstr(split_data[0], ")") != NULL){
-            str_split(split_data[0], ")", split_data);
-            char *s_amount = split_data[0];
-            size = (int) strtol(s_amount, (char **)NULL, 10);
-        }
-    }
-    else{
-        while (str && strstr(str, "X") != NULL) {
             unsigned int matches = 0;
-            str = str_replace(str, "X", "", &matches);
-            size = matches;
+            str_original = str_replace(str_original, "X(", "", &matches);
+            char *split[2];
+            str_split(split_data[0], ")", split);
+            char *s_amount = split[0];
+            size += (int) strtol(s_amount, (char **)NULL, 10);
         }
     }
+    while (str_original && strstr(str_original, "X") != NULL) {
+        unsigned int m = 0;
+        str_original = str_replace(str_original, "X", "", &m);
+        size += m;
+    }
+
     free(str);
     return size;
 }
