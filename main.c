@@ -49,7 +49,7 @@ unsigned char choice = 0;
  */
 int main()
 {
-    printf("----------------------  Eroski test exercise  ---------------------\n");
+    printf("***********************  Eroski test exercise  ***********************\n");
     FILE *in_file  = fopen("data.txt", "r");
     // test for files not existing.
     if (in_file == NULL)
@@ -64,11 +64,11 @@ int main()
         unsigned int index = 0;
         char *s;
         char **data = NULL;
-        data = (char**)malloc(sizeof(char*) * 100);
+        data = (char**)malloc(sizeof(char*) * 1);
         while(fscanf(in_file,"%s", s) != EOF)
         {
             if(s){
-                data[index] = (char *)(malloc((strlen(s) + 1)*sizeof (char*)));
+                data[index] = (char *)(malloc((strlen(s) + 1)*sizeof (char)));
                 strcpy(data[index], s);
                 index++;
                 data = (char**)(realloc(data, (index+1)*sizeof(*data)));
